@@ -1,5 +1,6 @@
 # TOM Observes Mice
 ![this is fair use right?](tom_n_jerry.jpg)
+
 TOM Observes Mice (TOM) is a simple and relatively cheap tool for scientists interested in peeping on mice in their natural habit. Their home cage.
 Once setup, this tool is simple to use and written in Python so that it should be easy for other researchers to make edits as necessary.
 If you use TOM, please reference this repository.
@@ -95,9 +96,9 @@ And that should be it for dependencies
 8. You should now be able to record audio by typing `./v_tom.py`. You will be prompted for a file prefix, desired recording time in seconds, and whether or not to start the audio pi. If you chose to start the audio pi, there will be a 10 second delay before beginning so that that audio pi has time to setup. Alternatively if you don't want to deal with networking and/or the 10 second delay, you can manually start the audio pi first in another terminal window (e.g. `nohup ssh user@hostname prefix record_length`).
 
 ## TODO
--[ ] Complete build instructions with pictures
--[ ] Create a bash file so initial setup is less painful OR make images to skip process altogether. Unsure which would be simpler for user (or more importantly me).
--[ ] Create better frame
--[ ] Add optional GUI for truly codeless experience
--[ ] Automate file transfer (low priority, since automating this is potentially difficult and transfering manually is relatively trivial if time consuming)
+- Complete build instructions with pictures
+- Create a bash file so initial setup is less painful OR make images to skip process altogether. Unsure which would be simpler for user (or more importantly me).
+- Create better frame
+- Add optional GUI for truly codeless experience
+- Automate file transfer (low priority, since automating this is potentially difficult and transfering manually is relatively trivial if time consuming)
 -[ ] Get it working on one raspberry pi. After trying for months this seems almost impossible with current raspi,
