@@ -1,6 +1,6 @@
 #!/bin/bash
 
-sudo apt update && apt upgrade
+sudo apt update
 sudo apt install -y libportaudio2 ffmpeg python3-pip python3-cffi python3-numpy
 sudo python -m venv --system-site-packages /opt/rec/
 source /opt/rec/bin/activate

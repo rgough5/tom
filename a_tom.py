@@ -13,27 +13,29 @@ import time
 from gpiozero import DigitalInputDevice
 # import subprocess
 
-# storage = usv@vid1.local:. # address of computer and location on that computer
-fs = 250000 # audio sample rate. NOTE as of 03/22/24, changing this to anything other the microphones default rate seemingly doesn't work on linux, this seems to be an issue with the sounddevice module
-ch = 1 # idk
-seg = 3600
-# how long to record before starting next track
-# (note that wav files cap out at 2 GB or ~2 hours at 250000 Hz)
-mic_key = 'ltramic' # edit if not using an Ultramic
-start_pin = DigitalInputDevice(pin=26)
-audio_ready = DigitalOutputDevice(pin=19)
+def recA(fname, dur, halt=False):
 
-def recA(fname, dur):
-    audio_ready.on()
-    start_pin.wait_for_active()
-    audio_ready.off()
-    #wav files are capped at 2GB
+    # storage = usv@vid1.local:. # address of computer and location on that computer
+    fs = 250000 # audio sample rate. NOTE as of 03/22/24, changing this to anything other the microphones default rate seemingly doesn't work on linux, this seems to be an issue with the sounddevice module
+    ch = 1 # idk
+    seg = 3600
+    # how long to record before starting next track
+    # (note that wav files cap out at 2 GB or ~2 hours at 250000 Hz)
+    mic_key = 'ltramic' # edit if not using an Ultramic
+    start_pin = DigitalInputDevice(pin=26)
+    audio_ready = DigitalOutputDevice(pin=19)
+
+    if halt:
+        audio_ready.on()
+        start_pin.wait_for_active()
+        audio_ready.off()
+
     try:
         dev_i = sd.query_devices(device=mic_key)['index']
         #apparent bug on linux where the only available sampling rate is the mic's default
 
     except ValueError:
-        print('unable to find Ultramic, using default device')
+        print('unable to find Ultramic, trying default device')
         print(sd.query_devices())
         dev_i = 0
         fs = int(sd.query_devices(0)['default_samplerate'])
@@ -63,12 +65,12 @@ def recLoop(fname, t):
 
     while i < t//seg:
         i_fname = fname+'_'+str(i)+'_'+'{:%m%d%y-%H%M%S}'.format(datetime.now())
-        recA(i_fname, seg)
+        recA(i_fname, seg, True)
         i += 1
 
     ft = seg if t%seg == 0 else t%seg
     i_fname = '{}_{}_{:%m%d%y-%H%M%S}'.format(fname, str(i), datetime.now())
-    recA(i_fname, ft)
+    recA(i_fname, ft, True)
 
 if __name__=='__main__':
     fname = sys.argv[1]

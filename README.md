@@ -18,6 +18,7 @@ Disclaimer: the Raspberry Pi Foundation seems to make a habit of frequent breaki
 - ribbon cable appropriate for pi model
 - Dodotronic ultramic UM250K microphone
 - USB A-to-mini B cable
+- A shared network the raspis can communicate across via SSH. This can be accomplished a dozen ways.
 
 ## Recommended Hardware
 - Some sort of case. .dxf file include in the repository can be used to cut a frame out of 2.75mm acrylic, but this frame is flimsy and provides little protection. The pis and camera are held in place using 12 m2.5 screws and nuts with the laser cut washers acting as spacers.
@@ -33,22 +34,16 @@ After screwing everything down, connect pins 19, 26, and ground on one pi to the
 
 ![picture of pin chart](pic/GPIO.png)
 
-
-## Network Setup
-1. Setup your router as desired.
-2. I recommend connecting the pis to the router with ethernet cables, but wifi should be sufficient.
-3. I connecting a long term data storage solution such as a NAS device
-
-I highly recomend a router, but alternatives include connecting pis directly with ethernet cables and manually setting ip addresses or and AdHoc network.
-
 ## Audio Pi Setup
 1. Install Raspberry Pi OS Lite onto your SSD with custom settings. In the custom settings select username, a unique hostname, setup wifi, and enable SSH.
+    - It's a good on first boot is to run `sudo apt update && apt upgrade`
 2. With the pi on and [connected to the internet](https://www.raspberrypi.com/documentation/computers/configuration.html#configuring-networking) enter `curl -O https://raw.githubusercontent.com/rgough5/tom/main/install.sh` to download the installer
-3. Run the install script `./install.sh` to install dependencies and download `a_tom.py`.
-4. Sample rate, audio channels, and track length can be editted at the top of the file with variables `fs`, `ch`, and `seg` respectively
+3. Make the install file executable `chmod +x install.sh`
+4. Run the install script `./install.sh` 
+5. Sample rate, audio channels, and track length can be editted near the top of the file, within the definition for the function recA.
 
 ## Video Pi Setup
-1. Repeat step of of the audio setup above.
+1. Repeat step 1 of the audio setup above.
 2. You can download `v_tom.py` wherever you want, but currently, where you run it is the directory videos will be saved in.
 3. At the top of `v_tom.py`, the variables `seg`, `exposure`, and `fdl` adjust the tracklength, camera exposure, and frame rate respectively.
 4. IMPORTANT: To start the audio pi from the video pi
@@ -63,24 +58,18 @@ I highly recomend a router, but alternatives include connecting pis directly wit
     6. `ssh user@hostname` to test that you can login to the audio pi without a password
 6. You should now be able to record audio by typing `./v_tom.py <file_prefix> <recording length>`. If you chose to start the audio pi, the recording name and prefix will be passed on. Files are automatically appended with date and time.
 
-## Solid State Drive Selection
-There are a dozen reasons not to use SD cards for running raspberry pis long term, therefore it is a soft requirement to upgrade to an SSD.
+## On SSD Selection
 The SSD can be connected to the pi in one of two ways: 1) using an NVME PCIe board (recommended) or 2) over usb.
 
 ### NVME via PCIe
 Pros: faster, more stable, neater. 
-Cons: Only available on raspi5, slightly more complicated to setup, compatibility issues between HAT and SSD models. 
+Cons: Only available on raspi5, compatibility issues between HAT and SSD models.
 Tested on [GeeekPi N07 PCIe...board](https://www.amazon.com/GeeekPi-N07-Peripheral-Raspberry-Support/dp/B0CWD266XR/ref=sr_1_16?dib=eyJ2IjoiMSJ9.BxcxCUbroCMtEvv2KZGuIBTcsh51iWpvVxAkAUuVUQbw4jFFBTZ0bHDgR4TfMjSk_DqFo3YlUWbA8-xw19eq8Bc02CW_sldTs1fasLMWEBrfFkt6mOtSa7W9O7DDaMpwT85GbBxdlhDlnGnkKiEC_nfcV2_VhsV_TZizpWSDSGvalVGaVXDYquvp8nSDAFKkoLCkFfKn703KZk9_Cs3LgOGy01u0kKNYoHmrpSwHVn8.xjfPCRpKhnZc_S6FQ2UUS4v5q_gtD8mRNwm3e160UcI&dib_tag=se&keywords=raspi+nvme+hat&qid=1714772061&sr=8-16) with a [500GB SAMSUNG 980 SSD](https://www.amazon.com/SAMSUNG-Technology-Intelligent-Turbowrite-Sequential/dp/B08V7GT6F3/ref=sr_1_8?sr=8-8). 
 Note that the tested board only functions with up to gen3 SSDs. This isn't a major loss since the pi does not support gen4 speeds anyways.
-1. Setup will require an SD card or other means to modify firmware settings to enable the PCIe port. With the raspi booted: `sudo nano /boot/firmware/config.txt`
-2. To set the connection speed add to the bottom of this file `dtparam=pciex1_gen=2` or `dtparam=pciex1_gen=3` depending on your SSD.
-3. Edit the config. `sudo raspi-config` and using the keyboard navigate `Advanced Options` > `Bootloader Version` > `Latest`
-4. Exit config and reboot the raspi `sudo shutdown -r now` and if everything boots correctly, procede.
-5. With pi off and unplugged, connect the board with SSD to the pi.
-6. Boot the pi with sd card or what have you unplugged and boot the pi
+- While not officially supported, you may consider adding the line `dtparam=pciex1_gen=3` to the bottom of your raspi's config file.
 
 ### USB
-- Pros: incredibly simple to setup, works on both 4 and 5.
+- Pros: simple to setup, works on both 4 and 5.
 - Cons: stability issues.
 IMPORTANT, while SSD over USB can be as simple as plug and play, be mindful of raspi [power requirements](https://www.raspberrypi.com/documentation/computers/raspberry-pi.html#typical-power-requirements). The model 5 can provide 1.6A (provide using a proper 5V 5A power supply) and the 4 series can provide 1.2A across all USB ports. An SSD requiring more current may appear to function, but risks data corruption.
 
