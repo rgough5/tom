@@ -10,20 +10,20 @@ import queue
 import sys
 from datetime import datetime
 import time
-from gpiozero import DigitalInputDevice
+from gpiozero import DigitalInputDevice, DigitalInputDevice
 # import subprocess
 
-def recA(fname, dur, halt=False):
+# storage = usv@vid1.local:. # address of computer and location on that computer
+fs = 250000 # audio sample rate. NOTE as of 03/22/24, changing this to anything other the microphones default rate seemingly doesn't work on linux, this seems to be an issue with the sounddevice module
+ch = 1 # idk
+seg = 3600
+# how long to record before starting next track
+# (note that wav files cap out at 2 GB or ~2 hours at 250000 Hz)
+mic_key = 'ltramic' # edit if not using an Ultramic
+start_pin = DigitalInputDevice(pin=26)
+audio_ready = DigitalOutputDevice(pin=19)
 
-    # storage = usv@vid1.local:. # address of computer and location on that computer
-    fs = 250000 # audio sample rate. NOTE as of 03/22/24, changing this to anything other the microphones default rate seemingly doesn't work on linux, this seems to be an issue with the sounddevice module
-    ch = 1 # idk
-    seg = 3600
-    # how long to record before starting next track
-    # (note that wav files cap out at 2 GB or ~2 hours at 250000 Hz)
-    mic_key = 'ltramic' # edit if not using an Ultramic
-    start_pin = DigitalInputDevice(pin=26)
-    audio_ready = DigitalOutputDevice(pin=19)
+def recA(fname, dur, halt=False, fs=fs, ch=ch):
 
     if halt:
         audio_ready.on()
@@ -61,16 +61,17 @@ def recA(fname, dur, halt=False):
     # subprocess.Popen("scp {} {}".format(fname, storage)
 
 def recLoop(fname, t):
-    i = 1
+    i = 0
 
     while i < t//seg:
         i_fname = fname+'_'+str(i)+'_'+'{:%m%d%y-%H%M%S}'.format(datetime.now())
         recA(i_fname, seg, True)
         i += 1
 
-    ft = seg if t%seg == 0 else t%seg
-    i_fname = '{}_{}_{:%m%d%y-%H%M%S}'.format(fname, str(i), datetime.now())
-    recA(i_fname, ft, True)
+    ft = t%seg
+    if ft !=0:
+        i_fname = '{}_{}_{:%m%d%y-%H%M%S}'.format(fname, str(i), datetime.now())
+        recA(i_fname, ft, True)
 
 if __name__=='__main__':
     fname = sys.argv[1]
@@ -79,3 +80,4 @@ if __name__=='__main__':
 
     recLoop(fname, t)
     # add file transfer here if transfering during recording is too much.
+                                                                                

@@ -10,10 +10,10 @@ from picamera2.encoders import H264Encoder
 from picamera2.outputs import FfmpegOutput
 from datetime import datetime # what a dumb import
 import time
-from gpiozero import DigitalOutputDevice
+from gpiozero import DigitalOutputDevice, DigitalInputDevice
 import subprocess
 
-audio_pi = "mus@usv2.local" # address of the audio raspi 
+audio_pi = "mus@a1.local" # address of the audio raspi 
 seg = 3600 # how long to record before starting next video
 exposure = 700 # camera exposure time
 fdl = (100000, 100000) # use this to set frame rate.
@@ -31,6 +31,7 @@ def recV(fname, dur, enc, a='n'):
     picam.start_encoder(enc, out)
     picam.start()
     start_pin.on()
+    print('recording ' + fname)
     time.sleep(5) # not really necessary but an easy way to ensure audio pi receives start signal
     start_pin.off()
     time.sleep(dur-5)
@@ -38,26 +39,29 @@ def recV(fname, dur, enc, a='n'):
     picam.stop_encoder()
 
 if __name__=='__main__':
-    fname = sys.argv[1]
-    t = int(sys.argv[2])
+    fname = input("File prefix: ")
+    t = int(input("Time in seconds to record: "))
+    # fname = sys.argv[1]
+    # t = int(sys.argv[2])
 
     ### preview block ###
-    preview = Picamera2()
-    preview.start_preview(Preview.QTGL)
-    preview_config = preview.create_preview_configuration({'size': (1280, 720)}, controls={'FrameDurationLimits': fdl, 'ExposureTime': exposure})
-    preview.configure(preview_config)
+    #preview = Picamera2()
+    #preview.start_preview(Preview.QTGL)
+    #preview_config = preview.create_preview_configuration({'size': (1280, 720)}, controls={'FrameDurationLimits': fdl, 'ExposureTime': exposure})
+    #preview.configure(preview_config)
 
-    print('Adjust camera as desired. Recording will start after audio selection')
-    print('Alternatively, cancel now with Ctrl+C')
-    time.sleep(2)
+    #print('Adjust camera as desired. Recording will start after audio selection')
+    #print('Alternatively, cancel now with Ctrl+C')
+    #time.sleep(2)
 
-    preview.start()
+    #preview.start()
 
     auto = 'a'
     while not(auto.lower() == 'y' or auto.lower() == 'n'):
         auto = input('Record with audio (y/n)? ')
+    print(auto.lower())
 
-    preview.stop()
+    #preview.stop()
 
     ### recording block ###
     if auto.lower() == 'y': # send start signal
@@ -68,12 +72,13 @@ if __name__=='__main__':
     picam.configure(cam_config)
     encoder = H264Encoder()
 
-    i = 1
+    i = 0
     while i < t//seg:
         i_fname = '{}_{}_{:%m%d%y-%H%M%S}'.format(fname, str(i), datetime.now())
-        recV(i_fname, seg, encoder)
+        recV(i_fname, seg, encoder, auto.lower())
         i += 1
 
-    ft = seg if t%seg == 0 else t%seg
-    i_fname = '{}_{}_{:%m%d%y-%H%M%S}'.format(fname, str(i), datetime.now())
-    recV(i_fname, ft, encoder, auto.lower())
+    ft = t%seg
+    if ft != 0:
+        i_fname = '{}_{}_{:%m%d%y-%H%M%S}'.format(fname, str(i), datetime.now())
+        recV(i_fname, ft, encoder, auto.lower())
