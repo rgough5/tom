@@ -10,7 +10,7 @@ import queue
 import sys
 from datetime import datetime
 import time
-from gpiozero import DigitalInputDevice, DigitalInputDevice
+from gpiozero import DigitalInputDevice, DigitalOutputDevice
 # import subprocess
 
 # storage = usv@vid1.local:. # address of computer and location on that computer
@@ -80,4 +80,3 @@ if __name__=='__main__':
 
     recLoop(fname, t)
     # add file transfer here if transfering during recording is too much.
-                                                                                

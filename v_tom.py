@@ -13,9 +13,9 @@ import time
 from gpiozero import DigitalOutputDevice, DigitalInputDevice
 import subprocess
 
-audio_pi = "mus@a1.local" # address of the audio raspi 
+audio_pi = "mus@usv1.local" # address of the audio raspi 
 seg = 3600 # how long to record before starting next video
-exposure = 700 # camera exposure time
+exposure = 500 # camera exposure time
 fdl = (100000, 100000) # use this to set frame rate.
 # From the Picamera 2 Docs:
 # Every camera frame may not take less than the first value

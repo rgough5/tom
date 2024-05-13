@@ -39,9 +39,8 @@ After screwing everything down, connect pins 19, 26, and ground on one pi to the
 1. Install Raspberry Pi OS Lite onto your SSD with custom settings. In the custom settings select username, a unique hostname, setup wifi, and enable SSH.
     - It's a good on first boot is to run `sudo apt update && apt upgrade`
 2. With the pi on and [connected to the internet](https://www.raspberrypi.com/documentation/computers/configuration.html#configuring-networking) enter `curl -O https://raw.githubusercontent.com/rgough5/tom/main/install.sh` to download the installer
-3. Make the install file executable `chmod +x install.sh`
-4. Run the install script `./install.sh` 
-5. Sample rate, audio channels, and track length can be editted near the top of the file, within the definition for the function recA.
+3. Make the install file executable `bash install.sh`
+4. Sample rate, audio channels, and track length can be editted near the top of the file, within the definition for the function recA.
 
 ## Video Pi Setup
 1. Repeat step 1 of the audio setup above.
