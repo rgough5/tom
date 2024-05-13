@@ -2,6 +2,7 @@
 ![this is fair use right?](pic/tom_n_jerry.jpg)
 
 TOM Observes Mice (TOM) is a simple and relatively cheap tool for scientists interested in peeping on mice in their natural habit. Their home cage.
+With a second raspberry pi, you can also record ultrasonic audio that will be syncronized with video.
 Once setup, this tool is simple to use and written in Python so that other researchers can modify it as necessary.
 
 # Setup and Installation
@@ -30,7 +31,7 @@ Disclaimer: the Raspberry Pi Foundation seems to make a habit of frequent breaki
 For the frame provided in `base_plate.dxf`, print out 2 plates making an effort to save the rings and rectangles. The rectangles are set vertically and act as supports separating the the two plates. The spacers are used to keep the camera and pi boards from directly touching the frame.
 Instructions with picture to come.
 
-After screwing everything down, connect pins 19, 26, and ground on one pi to the corresponding pins on the other. These pins are used to ensure the pis are reliably syncronized.
+After screwing everything down, connect pins 19, 26, and ground on one pi to the same pins on the other. These pins are used to ensure the pis are reliably syncronized.
 
 ![picture of pin chart](pic/GPIO.png)
 
@@ -58,25 +59,26 @@ After screwing everything down, connect pins 19, 26, and ground on one pi to the
     6. `ssh user@hostname` to test that you can login to the audio pi without a password
 6. You should now be able to record audio by typing `./v_tom.py <file_prefix> <recording length>`. If you chose to start the audio pi, the recording name and prefix will be passed on. Files are automatically appended with date and time.
 
-## On SSD Selection
+### On SSD Selection
 The SSD can be connected to the pi in one of two ways: 1) using an NVME PCIe board (recommended) or 2) over usb.
 
-### NVME via PCIe
-Pros: faster, more stable, neater.
-Cons: Only available on raspi5, compatibility issues between HAT and SSD models.
-Tested on [GeeekPi N07 PCIe...board](https://www.amazon.com/GeeekPi-N07-Peripheral-Raspberry-Support/dp/B0CWD266XR/ref=sr_1_16?dib=eyJ2IjoiMSJ9.BxcxCUbroCMtEvv2KZGuIBTcsh51iWpvVxAkAUuVUQbw4jFFBTZ0bHDgR4TfMjSk_DqFo3YlUWbA8-xw19eq8Bc02CW_sldTs1fasLMWEBrfFkt6mOtSa7W9O7DDaMpwT85GbBxdlhDlnGnkKiEC_nfcV2_VhsV_TZizpWSDSGvalVGaVXDYquvp8nSDAFKkoLCkFfKn703KZk9_Cs3LgOGy01u0kKNYoHmrpSwHVn8.xjfPCRpKhnZc_S6FQ2UUS4v5q_gtD8mRNwm3e160UcI&dib_tag=se&keywords=raspi+nvme+hat&qid=1714772061&sr=8-16) with a [500GB SAMSUNG 980 SSD](https://www.amazon.com/SAMSUNG-Technology-Intelligent-Turbowrite-Sequential/dp/B08V7GT6F3/ref=sr_1_8?sr=8-8). 
+NVME via PCIe
+
+- Pros: faster, more stable, neater.
+- Cons: Only available on raspi5, compatibility issues between HAT and SSD models.
+- Tested on [GeeekPi N07 PCIe...board](https://www.amazon.com/GeeekPi-N07-Peripheral-Raspberry-Support/dp/B0CWD266XR/ref=sr_1_16?dib=eyJ2IjoiMSJ9.BxcxCUbroCMtEvv2KZGuIBTcsh51iWpvVxAkAUuVUQbw4jFFBTZ0bHDgR4TfMjSk_DqFo3YlUWbA8-xw19eq8Bc02CW_sldTs1fasLMWEBrfFkt6mOtSa7W9O7DDaMpwT85GbBxdlhDlnGnkKiEC_nfcV2_VhsV_TZizpWSDSGvalVGaVXDYquvp8nSDAFKkoLCkFfKn703KZk9_Cs3LgOGy01u0kKNYoHmrpSwHVn8.xjfPCRpKhnZc_S6FQ2UUS4v5q_gtD8mRNwm3e160UcI&dib_tag=se&keywords=raspi+nvme+hat&qid=1714772061&sr=8-16) with a [500GB SAMSUNG 980 SSD](https://www.amazon.com/SAMSUNG-Technology-Intelligent-Turbowrite-Sequential/dp/B08V7GT6F3/ref=sr_1_8?sr=8-8). 
 Note that the tested board only functions with up to gen3 SSDs. This isn't a major loss since the pi does not support gen4 speeds.
 - While not officially supported, you may consider adding the line `dtparam=pciex1_gen=3` to the bottom of your raspi's config file for faster write speeds on gen3 SSDs.
 
-### USB
+USB
+
 - Pros: simple to setup, works on both 4 and 5.
 - Cons: stability issues.
-IMPORTANT, while SSD over USB can be as simple as plug and play, be mindful of raspi [power requirements](https://www.raspberrypi.com/documentation/computers/raspberry-pi.html#typical-power-requirements). Across their 4 ports, a model 5 can provide 1.6A (with a proper 5V 5A power supply) and the 4 series can provide 1.2A. An SSD requiring more current may appear functional, but risks data corruption.
+- IMPORTANT, while SSD over USB can be as simple as plug and play, be mindful of raspi [power requirements](https://www.raspberrypi.com/documentation/computers/raspberry-pi.html#typical-power-requirements). Across their 4 ports, a model 5 can provide 1.6A (with a proper 5V 5A power supply) and the 4 series can provide 1.2A. An SSD requiring more current may appear functional, but risks data corruption.
 
 ## TODO
 - Complete build instructions with pictures
 - Create better frame
 - Add optional GUI for truly codeless experience
 - Automate file transfer to remote
-
-- Get it working on one raspberry pi. After trying for months this seems almost impossible with current raspi hardware. I have once been able to record for an hour with only minor overflows on the audio buffer, but this is inconsistent. Recording audio and video on a single pi at a sample rate high enough to record USVs may require a real time kernel, but working with a RT kernel is beyond my current power level.
+- Get it working on one raspberry pi. After trying for months this seems almost impossible either due to limits with python or current raspi hardware. While I have once been able to record for an hour without overflows on the audio buffer, in other cases, I have lost up to minutes of audio.
