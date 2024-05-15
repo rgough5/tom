@@ -26,37 +26,36 @@ Disclaimer: the Raspberry Pi Foundation seems to make a habit of frequent breaki
 - Cooling. Heatsinks were sufficient in testing
 - A router and potentially network switches to setup a LAN for communication between the pis and a long term storage solution.
 
-## Building
+## Build
 
-For the frame provided in `base_plate.dxf`, print out 2 plates making an effort to save the rings and rectangles. The rectangles are set vertically and act as supports separating the the two plates. The spacers are used to keep the camera and pi boards from directly touching the frame.
-Instructions with picture to come.
+Instructions with pictures to come.
 
-After screwing everything down, connect pins 19, 26, and ground on one pi to the same pins on the other. These pins are used to ensure the pis are reliably syncronized.
+After building the case screwing everything down, connect pins 19, 26, and ground on one pi to the same pins on the other. These pins are used to ensure the pis are reliably syncronized.
 
 ![picture of pin chart](pic/GPIO.png)
 
-## Audio Pi Setup
-1. Install Raspberry Pi OS Lite onto your SSD with custom settings. In the custom settings select username, a unique hostname, setup wifi, and enable SSH.
-    - It's a good on first boot is to run `sudo apt update && apt upgrade`
-2. With the pi on and [connected to the internet](https://www.raspberrypi.com/documentation/computers/configuration.html#configuring-networking) enter `curl -O https://raw.githubusercontent.com/rgough5/tom/main/install.sh` to download the installer
-3. Make the install file executable `bash install.sh`
-4. Sample rate, audio channels, and track length can be editted near the top of the file, within the definition for the function recA.
+## Installation
+This will be easiest if you connect to the pis over SSH
 
-## Video Pi Setup
-1. Repeat step 1 of the audio setup above.
+### Video
+1. Install Raspberry Pi OS onto your SSD with custom settings. In the custom settings select username, a unique hostname, setup wifi, and enable SSH.
+    - It's a good on first boot is to run `sudo apt update && apt upgrade`
 2. You can download `v_tom.py` wherever you want, but currently, where you run it is the directory videos will be saved in.
+
+### Audio
+1. Repeat step 1 of the video setup above, however, install the Lite version of Raspberry Pi OS.
+2. With the pi on and [connected to the internet](https://www.raspberrypi.com/documentation/computers/configuration.html#configuring-networking) enter `curl -O https://raw.githubusercontent.com/rgough5/tom/main/install.sh` to download the installer
+3. Run the install file `bash install.sh` to take care of installing the audio module and the necessary dependencies
+
+### Usage
+1. Both raspis must share a network.
+2. Ensure the variable `audio_pi` at the top of `v_tom.py` is user@hostname of the target the audio pi.
+3. IMPORTANT BEFORE FIRST RUN: You will need to create an ssh key. In a terminal window:
+    1. `ssh-keygen` you can simply skip the next 3 prompts with enter.
+    2. `ssh-copy-id user@hostname` replacing user and hostname as appropriate
 3. At the top of `v_tom.py`, the variables `seg`, `exposure`, and `fdl` adjust the tracklength, camera exposure, and frame rate respectively.
-4. IMPORTANT: To start the audio pi from the video pi
-    1. Both raspis need to share a network.
-    2. Ensure `audio_pi` is  user@hostname.local of target the audio pi.
-5. Before recording you will need to create a key to ssh and start the audio pi. In a terminal window
-    1. `ssh-keygen`
-    2. In response to 'Enter file in which...' just slap the enter key
-    3. Enter key again to skip
-    4. Once more
-    5. `ssh-copy-id user@hostname` replacing user and hostname as appropriate
-    6. `ssh user@hostname` to test that you can login to the audio pi without a password
-6. You should now be able to record audio by typing `./v_tom.py <file_prefix> <recording length>`. If you chose to start the audio pi, the recording name and prefix will be passed on. Files are automatically appended with date and time.
+4. Sample rate, audio channels, and track length can be editted near the top of the file, within the definition for the function recA.
+5. You should now be able to record audio by typing `./v_tom.py <file_prefix> <recording length>`. If you chose to start the audio pi, the recording name and prefix will be passed on. Files are automatically appended with date and time.
 
 ### On SSD Selection
 The SSD can be connected to the pi in one of two ways: 1) using an NVME PCIe board (recommended) or 2) over usb.
@@ -77,7 +76,7 @@ USB
 
 ## TODO
 - Complete build instructions with pictures
-- Create better frame
+- Create 3D printable frame.
 - Add optional GUI for truly codeless experience
 - Automate file transfer to remote
 - Get it working on one raspberry pi. After trying for months this seems almost impossible either due to limits with python or current raspi hardware. While I have once been able to record for an hour without overflows on the audio buffer, in other cases, I have lost up to minutes of audio.
