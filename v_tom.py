@@ -18,6 +18,22 @@ import subprocess
 # nor longer than the second. FR = 1000000 / frame_duration. Common settings:
 # 10 FPS = (100000, 100000), 30 FPS = (33333, 33333), 25 FPS (40000, 40000)
 
+def recV(fname, dur, enc, bitrate, a='n'):
+    start_pin = DigitalOutputDevice(pin=26)
+    audio_ready = DigitalInputDevice(pin=19)
+    if a == 'y':
+        audio_ready.wait_for_active()
+    out = FfmpegOutput(fname+'.mp4')
+    picam.start_encoder(enc, out, quality=Quality.MEDIUM)
+    picam.start()
+    start_pin.on()
+    print('recording ' + fname)
+    time.sleep(5) # not really necessary but an easy way to ensure audio pi receives start signal
+    start_pin.off()
+    time.sleep(dur-4)
+    picam.stop()
+    picam.stop_encoder()
+
 if __name__=='__main__':
     sz= (1920, 1080)
     frame_duration=(100000, 100000)
@@ -60,20 +76,4 @@ if __name__=='__main__':
     if ft != 0:
         i_fname = '{}_{}_{:%m%d%y-%H%M%S}'.format(fname, str(i), datetime.now())
         recV(i_fname, ft, encoder, auto.lower())
-
-def recV(fname, dur, enc, bitrate, a='n'):
-    start_pin = DigitalOutputDevice(pin=26)
-    audio_ready = DigitalInputDevice(pin=19)
-    if a == 'y':
-        audio_ready.wait_for_active()
-    out = FfmpegOutput(fname+'.mp4')
-    picam.start_encoder(enc, out, quality=Quality.MEDIUM)
-    picam.start()
-    start_pin.on()
-    print('recording ' + fname)
-    time.sleep(5) # not really necessary but an easy way to ensure audio pi receives start signal
-    start_pin.off()
-    time.sleep(dur-4)
-    picam.stop()
-    picam.stop_encoder()
 
