@@ -49,13 +49,13 @@ This will be easiest if you connect to the pis over SSH
 
 ### Usage
 1. Both raspis must share a network.
-2. Ensure the variable `audio_pi` at the top of `v_tom.py` is user@hostname of the target the audio pi.
+2. Ensure the variable `audio_pi` at the top of `v_tom.py` is user@hostname of the target audio pi.
 3. IMPORTANT BEFORE FIRST RUN: You will need to create an ssh key. In a terminal window:
     1. `ssh-keygen` you can simply skip the next 3 prompts with enter.
-    2. `ssh-copy-id user@hostname` replacing user and hostname as appropriate
-3. At the top of `v_tom.py`, the variables `seg`, `exposure`, and `fdl` adjust the tracklength, camera exposure, and frame rate respectively.
-4. Sample rate, audio channels, and track length can be editted near the top of the file, within the definition for the function recA.
-5. You should now be able to record audio by typing `./v_tom.py <file_prefix> <recording length>`. If you chose to start the audio pi, the recording name and prefix will be passed on. Files are automatically appended with date and time.
+    2. `ssh-copy-id user@hostname.local` replacing user and hostname as appropriate
+4. At the top of `v_tom.py`, the variables `seg`, `exposure`, and `fdl` adjust the tracklength, camera exposure, and frame rate respectively.
+5. At the top of `a_tom.py`, sample rate, audio channels, and track length can be editted near the top of the file. `seg` in `a_tom.py` should be the same as `seg` in `v_tom.py`.
+6. You should now be able to record audio by typing `./v_tom.py <file_prefix> <recording length>`. If you chose to start the audio pi, the recording name and prefix will be passed on. Files are automatically appended with date and time.
 
 ### On SSD Selection
 The SSD can be connected to the pi in one of two ways: 1) using an NVME PCIe board (recommended) or 2) over usb.
