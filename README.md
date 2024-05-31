@@ -37,13 +37,13 @@ After building the case screwing everything down, connect pins 19, 26, and groun
 ### Installation
 1. For each raspi Install Raspberry Pi OS Lite onto your SSD with custom settings. In the custom settings select username, a unique hostname, setup wifi, and enable SSH.
     - Be sure to enter a unique hostname for each pi.
-2. It's a good on first boot is to run `sudo apt update && apt upgrade`
-3. With the pi on and connected to the internet enter `curl -O https://raw.githubusercontent.com/rgough5/tom/main/install.sh` to download the installer
+2. It's a good on first boot is to run `sudo apt-get update && apt-get upgrade`
+3. With the pi on and [connected to the internet](https://www.raspberrypi.com/documentation/computers/configuration.html#networking) enter `curl -O https://raw.githubusercontent.com/rgough5/tom/main/install.sh` to download the installer
 4. Run the install file `bash install.sh` to take care of installing the python scripts and necessary dependencies
 
 ### Usage
 1. Both raspis must share a network.
-2. Ensure the variable `audio_pi` at the top of `v_tom.py` is user@hostname of the target audio pi.
+2. Ensure the variable `audio_pi` at the top of `v_tom.py` is the appropriate username@hostname of the target audio pi.
 3. IMPORTANT BEFORE FIRST RUN: You will need to create an ssh key. In a terminal window:
     1. `ssh-keygen` you can simply skip the next 3 prompts with enter.
     2. `ssh-copy-id user@hostname.local` replacing user and hostname as appropriate
