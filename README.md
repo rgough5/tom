@@ -34,18 +34,12 @@ After building the case screwing everything down, connect pins 19, 26, and groun
 
 ![picture of pin chart](pic/GPIO.png)
 
-## Installation
-This will be easiest if you connect to the pis over SSH
-
-### Video
-1. Install Raspberry Pi OS onto your SSD with custom settings. In the custom settings select username, a unique hostname, setup wifi, and enable SSH.
-    - It's a good on first boot is to run `sudo apt update && apt upgrade`
-2. You can download `v_tom.py` wherever you want, but currently, where you run it is the directory videos will be saved in.
-
-### Audio
-1. Repeat step 1 of the video setup above, however, install the Lite version of Raspberry Pi OS.
-2. With the pi on and [connected to the internet](https://www.raspberrypi.com/documentation/computers/configuration.html#configuring-networking) enter `curl -O https://raw.githubusercontent.com/rgough5/tom/main/install.sh` to download the installer
-3. Run the install file `bash install.sh` to take care of installing the audio module and the necessary dependencies
+### Installation
+1. For each raspi Install Raspberry Pi OS Lite onto your SSD with custom settings. In the custom settings select username, a unique hostname, setup wifi, and enable SSH.
+    - Be sure to enter a unique hostname for each pi.
+2. It's a good on first boot is to run `sudo apt update && apt upgrade`
+3. With the pi on and connected to the internet enter `curl -O https://raw.githubusercontent.com/rgough5/tom/main/install.sh` to download the installer
+4. Run the install file `bash install.sh` to take care of installing the python scripts and necessary dependencies
 
 ### Usage
 1. Both raspis must share a network.
