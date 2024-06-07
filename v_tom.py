@@ -74,10 +74,11 @@ if __name__=='__main__':
     while i < t//seg:
         i_fname = '{}_{}_{:%m%d%y-%H%M%S}'.format(fname, str(i), datetime.now())
         recV(picam, i_fname, seg, encoder, auto.lower())
+        subprocess.Popen("rsync {}.mp4 {}".format(i_fname, transfer_address, shell=True))
         i += 1
 
     ft = t%seg
     if ft != 0:
         i_fname = '{}_{}_{:%m%d%y-%H%M%S}'.format(fname, str(i), datetime.now())
         recV(picam, i_fname, ft, encoder, auto.lower())
-
+        subprocess.Popen("rsync {}.mp4 {}".format(i_fname, transfer_address, shell=True))
