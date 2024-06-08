@@ -60,25 +60,28 @@ def recA(fname, dur, halt=False, fs=fs, ch=ch):
     print("finished audio recording"+fname)
     # subprocess.Popen("scp {} {}".format(fname, storage)
 
-def recLoop(fname, t, transfer_address):
+def recLoop(fname, t, transfer='n', transfer_address==None):
     i = 0
 
     while i < t//seg:
         i_fname = fname+'_'+str(i)+'_'+'{:%m%d%y-%H%M%S}'.format(datetime.now())
         recA(i_fname, seg, True)
-        subprocess.Popen("rsync {}.flac {}".format(i_fname, transfer_address))
+        subprocess.Popen("rsync {}.flac {}".format(i_fname, transfer_address)) # note Popen is nonblocking
         i += 1
 
     ft = t%seg
     if ft !=0:
         i_fname = '{}_{}_{:%m%d%y-%H%M%S}'.format(fname, str(i), datetime.now())
         recA(i_fname, ft, True)
-        subprocess.Popen("rsync {}.flac {}".format(i_fname, transfer_address))
+        if transfer == 'y':
+            subprocess.Popen("rsync {}.flac {}".format(i_fname, transfer_address))
 
 if __name__=='__main__':
     fname = sys.argv[1]
     t = int(sys.argv[2])
+    transfer = sys.argv[3]
+    trans_adrs = sys.argv[4]
     print('waiting for start signal from video module')
 
-    recLoop(fname, t, "example_transfer")
+    recLoop(fname, t, transfer, trans_adr)
     # add file transfer here if transfering during recording is too much.

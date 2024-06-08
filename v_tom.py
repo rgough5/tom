@@ -42,6 +42,8 @@ if __name__=='__main__':
     sharpness=4
     seg=3600
 
+    auto = 'a'
+    transfer = 't'
     ### setup section ###
     # fname = sys.argv[1]
     # t = int(sys.argv[2])
@@ -49,16 +51,20 @@ if __name__=='__main__':
     picam = Picamera2()
     cam_config = picam.create_video_configuration({'size': sz}, controls={'FrameDurationLimits': frame_duration, 'ExposureTime': exposure, 'Saturation': 0, 'NoiseReductionMode': controls.draft.NoiseReductionModeEnum.Off, 'Sharpness': sharpness})
     picam.configure(cam_config)
-    auto = 'a'
     encoder = H264Encoder()
     print('Adjust camera as desired. Recording will start after audio selection')
     print('Alternatively, cancel now with Ctrl+C')
-    picam.start_preview(Preview.QT) #bad way to preview, but necessary to view over ssh
+    picam.start_preview(Preview.QT) #inefficient way to preview, but necessary to view over ssh
     picam.start()
     fname = input("File prefix: ")
     t = int(input("Time in seconds to record: "))
+
     while not(auto.lower() == 'y' or auto.lower() == 'n'):
-        auto = input('Record with audio (y/n)? ')
+        auto = input('Record with audio? (y/n) ')
+
+    while not(transfer.lower() == 'y' or transfer.lower() == 'n'):
+        auto = input('Transfer files? (y/n) ')
+
     try:
         picam.stop_preview()
     except:
@@ -68,7 +74,7 @@ if __name__=='__main__':
     ### recording section ###
     if auto.lower() == 'y': # start audio process over ssh
         audio_pi = input('Audio pi address: ')
-        subprocess.Popen("nohup ssh {} './a_tom.py {} {}'".format(audio_pi, fname, t), shell=True)
+        subprocess.Popen("nohup ssh {} './a_tom.py {} {} {} {}'".format(audio_pi, fname, t, transfer, transfer_address), shell=True)
 
     i = 0
     while i < t//seg:
