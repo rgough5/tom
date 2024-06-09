@@ -19,7 +19,7 @@ import subprocess
 # nor longer than the second. FR = 1000000 / frame_duration. Common settings:
 # 10 FPS = (100000, 100000), 30 FPS = (33333, 33333), 25 FPS (40000, 40000)
 
-def recV(picam, fname, dur, enc, bitrate, a='n'):
+def recV(picam, fname, dur, enc, a='n'):
     start_pin = DigitalOutputDevice(pin=26)
     audio_ready = DigitalInputDevice(pin=19)
     if a == 'y':
@@ -96,7 +96,7 @@ if __name__=='__main__':
     i = 0
     while i < t//seg:
         i_fname = '{}_{}_{:%m%d%y-%H%M%S}'.format(fname, str(i), datetime.now())
-        recV(picam, i_fname, seg, encoder, auto.lower())
+        recV(picam, i_fname, seg, encoder, a=auto.lower())
         if transfer == 'y':
             rTran(i_fname, transfer_address)
         i += 1
@@ -104,6 +104,6 @@ if __name__=='__main__':
     ft = t%seg
     if ft != 0:
         i_fname = '{}_{}_{:%m%d%y-%H%M%S}'.format(fname, str(i), datetime.now())
-        recV(picam, i_fname, ft, encoder, auto.lower())
+        recV(picam, i_fname, ft, encoder, a=auto.lower())
         if transfer == 'y':
             rTran(i_fname, transfer_address)
