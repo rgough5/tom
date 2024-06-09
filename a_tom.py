@@ -60,13 +60,14 @@ def recA(fname, dur, halt=False, fs=fs, ch=ch):
     print("finished audio recording"+fname)
     # subprocess.Popen("scp {} {}".format(fname, storage)
 
-def recLoop(fname, t, transfer='n', transfer_address==None):
+def recLoop(fname, t, transfer='n', transfer_address=None):
     i = 0
 
     while i < t//seg:
         i_fname = fname+'_'+str(i)+'_'+'{:%m%d%y-%H%M%S}'.format(datetime.now())
         recA(i_fname, seg, True)
-        subprocess.Popen("rsync {}.flac {}".format(i_fname, transfer_address)) # note Popen is nonblocking
+        if transfer == 'y':
+            rTran(i_fname, transfer_address)
         i += 1
 
     ft = t%seg
@@ -74,7 +75,18 @@ def recLoop(fname, t, transfer='n', transfer_address==None):
         i_fname = '{}_{}_{:%m%d%y-%H%M%S}'.format(fname, str(i), datetime.now())
         recA(i_fname, ft, True)
         if transfer == 'y':
-            subprocess.Popen("rsync {}.flac {}".format(i_fname, transfer_address))
+            rTran(i_fname, transfer_address)
+
+def rTran(file, adrs):
+    for attempt in range(5):
+        try:
+            subprocess.Popen("rsync {}.flac {}".format(file, adrs), shell=True)
+        except:
+            print('transfer failed {}'.format(attempt))
+            time.sleep(1)
+        else:
+            break
+
 
 if __name__=='__main__':
     fname = sys.argv[1]
@@ -83,5 +95,5 @@ if __name__=='__main__':
     trans_adrs = sys.argv[4]
     print('waiting for start signal from video module')
 
-    recLoop(fname, t, transfer, trans_adr)
+    recLoop(fname, t, transfer, trans_adrs)
     # add file transfer here if transfering during recording is too much.
