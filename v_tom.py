@@ -35,6 +35,16 @@ def recV(picam, fname, dur, enc, bitrate, a='n'):
     picam.stop()
     picam.stop_encoder()
 
+def rTran(file, adrs):
+    for attempt in range(5):
+        try:
+            subprocess.Popen("rsync {}.mp4 {}".format(file, adrs), shell=True)
+        except:
+            print('transfer failed {}'.format(attempt))
+            time.sleep(1)
+        else:
+            break
+
 if __name__=='__main__':
     sz= (1920, 1080)
     frame_duration=(100000, 100000)
@@ -63,7 +73,7 @@ if __name__=='__main__':
         auto = input('Record with audio? (y/n) ')
 
     while not(transfer.lower() == 'y' or transfer.lower() == 'n'):
-        auto = input('Transfer files? (y/n) ')
+        transfer = input('Transfer files? (y/n) ')
 
     try:
         picam.stop_preview()
@@ -72,19 +82,28 @@ if __name__=='__main__':
     picam.stop()
 
     ### recording section ###
-    if auto.lower() == 'y': # start audio process over ssh
+    if auto.lower() == 'y' and transfer.lower() == 'y': # start audio process over ssh
         audio_pi = input('Audio pi address: ')
+        transfer_address = input('Remote transfer location: ')
         subprocess.Popen("nohup ssh {} './a_tom.py {} {} {} {}'".format(audio_pi, fname, t, transfer, transfer_address), shell=True)
+    elif auto.lower() == 'y':
+        audio_pi = input('Audio pi address: ')
+        transfer_address = 'n'
+        subprocess.Popen("nohup ssh {} './a_tom.py {} {} {} {}'".format(audio_pi, fname, t, transfer, transfer_address), shell=True)
+    elif transfer.lower() == 'y':
+        transfer_address = input('Transfer addres: ')
 
     i = 0
     while i < t//seg:
         i_fname = '{}_{}_{:%m%d%y-%H%M%S}'.format(fname, str(i), datetime.now())
         recV(picam, i_fname, seg, encoder, auto.lower())
-        subprocess.Popen("rsync {}.mp4 {}".format(i_fname, transfer_address, shell=True))
+        if transfer == 'y':
+            rTran(i_fname, transfer_address)
         i += 1
 
     ft = t%seg
     if ft != 0:
         i_fname = '{}_{}_{:%m%d%y-%H%M%S}'.format(fname, str(i), datetime.now())
         recV(picam, i_fname, ft, encoder, auto.lower())
-        subprocess.Popen("rsync {}.mp4 {}".format(i_fname, transfer_address, shell=True))
+        if transfer == 'y':
+            rTran(i_fname, transfer_address)
