@@ -84,7 +84,7 @@ if __name__=='__main__':
     frame_duration=(100000, 100000)
     exposure=1000
     sharpness=4
-    seg=1800
+    seg=3600
 
     auto = 'a'
     transfer = 't'
@@ -93,7 +93,7 @@ if __name__=='__main__':
     # t = int(sys.argv[2])
 
     picam = Picamera2()
-    cam_config = picam.create_video_configuration({'size': sz}, controls={'FrameDurationLimits': frame_duration, 'ExposureTime': exposure, 'Saturation': 0, 'NoiseReductionMode': controls.draft.NoiseReductionModeEnum.Off, 'Sharpness': sharpness})
+    cam_config = picam.create_video_configuration({'size': sz, 'format': 'YUV420'}, controls={'FrameDurationLimits': frame_duration, 'ExposureTime': exposure, 'Saturation': 0, 'NoiseReductionMode': controls.draft.NoiseReductionModeEnum.Off, 'Sharpness': sharpness})
     picam.configure(cam_config)
     encoder = H264Encoder()
     print('Adjust camera as desired. Recording will start after audio selection')
