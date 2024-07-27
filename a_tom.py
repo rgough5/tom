@@ -11,7 +11,7 @@ import sys
 from datetime import datetime
 import time
 from gpiozero import DigitalInputDevice, DigitalOutputDevice
-# import subprocess
+import subprocess
 
 # storage = usv@vid1.local:. # address of computer and location on that computer
 fs = 250000 # audio sample rate. NOTE as of 03/22/24, changing this to anything other the microphones default rate seemingly doesn't work on linux, this seems to be an issue with the sounddevice module
@@ -50,7 +50,7 @@ def recA(fname, dur, halt=False, fs=fs, ch=ch):
         q.put(indata.copy())
     t = time.time()
     try:
-        with sf.SoundFile(fname+".wav", mode='w', samplerate=fs, channels=ch) as f: #potentially should change w to x in final app to prevent overwritting
+        with sf.SoundFile(fname+".flac", mode='w', samplerate=fs, channels=ch) as f: #potentially should change w to x in final app to prevent overwritting
             with sd.InputStream(samplerate = fs, device = dev_i, channels = ch, callback = callback):
                 print("recording audio, interrupt to stop")
                 while time.time()-t < dur:
@@ -60,23 +60,40 @@ def recA(fname, dur, halt=False, fs=fs, ch=ch):
     print("finished audio recording"+fname)
     # subprocess.Popen("scp {} {}".format(fname, storage)
 
-def recLoop(fname, t):
+def recLoop(fname, t, transfer='n', transfer_address=None):
     i = 0
 
     while i < t//seg:
         i_fname = fname+'_'+str(i)+'_'+'{:%m%d%y-%H%M%S}'.format(datetime.now())
         recA(i_fname, seg, True)
+        if transfer == 'y':
+            rTran(i_fname, transfer_address)
         i += 1
 
     ft = t%seg
     if ft !=0:
         i_fname = '{}_{}_{:%m%d%y-%H%M%S}'.format(fname, str(i), datetime.now())
         recA(i_fname, ft, True)
+        if transfer == 'y':
+            rTran(i_fname, transfer_address)
+
+def rTran(file, adrs):
+    for attempt in range(5):
+        try:
+            subprocess.Popen("rsync {}.flac {}".format(file, adrs), shell=True)
+        except:
+            print('transfer failed {}'.format(attempt))
+            time.sleep(1)
+        else:
+            break
+
 
 if __name__=='__main__':
     fname = sys.argv[1]
     t = int(sys.argv[2])
+    transfer = sys.argv[3]
+    trans_adrs = sys.argv[4]
     print('waiting for start signal from video module')
 
-    recLoop(fname, t)
+    recLoop(fname, t, transfer, trans_adrs)
     # add file transfer here if transfering during recording is too much.
