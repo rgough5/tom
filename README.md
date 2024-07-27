@@ -30,8 +30,8 @@ Instructions with pictures to come.
 1. Install Raspberry Pi OS Lite onto your SSD with custom settings. In the custom settings select username, a unique hostname, setup wifi, and enable SSH.
     - Be sure to enter a unique hostname.
 2. It's good on first boot is to run `sudo apt-get update` and `sudo apt-get upgrade`
-3. With the pi on and [connected to the internet](https://www.raspberrypi.com/documentation/computers/configuration.html#networking) enter `curl -O https://raw.githubusercontent.com/rgough5/tom/main/install.sh` to download the installer
-4. Run the install file `bash install.sh` to take care of installing the python scripts and necessary dependencies
+3. With the pi on and [connected to the internet](https://www.raspberrypi.com/documentation/computers/configuration.html#networking) enter `curl -O https://raw.githubusercontent.com/rgough5/tom/main/install_tom.sh` to download the installer
+4. Run the install file `bash install_tom.sh` to take care of installing the python scripts and necessary dependencies
 5. *Optional:* Install vlc `sudo apt-get vlc`. Installing VLC will install some dependencies that fix metadata. Furthermore, you can easily view videos remotely by x forwarding.
 
 ### Usage
