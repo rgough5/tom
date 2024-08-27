@@ -20,12 +20,21 @@ Once setup, this tool is simple to use and written in Python so that other resea
     - Requires separate USB A-to-mini-B cable
 
 ## Recommended Hardware
-- Some sort of case. .dxf file include in the repository can be used to cut a frame out of 2.75mm acrylic, but this frame is flimsy and provides little protection. The pis and camera are held in place using 12 m2.5 screws and nuts with the laser cut washers acting as spacers.
-- Cooling. Heatsinks were sufficient in testing, but I recommend active cooling with a fan
+- Some sort of case. .dxf file include in the repository can be used to cut a frame out of 2.75mm acrylic, but this frame is flimsy and provides little protection. The pi(s) and camera are held in place using 12 m2.5 screws and nuts with the laser cut washers acting as spacers.
+- Cooling. While heatsinks were sufficient in testing, I recommend active cooling with a fan.
 - A router and potentially network switches to setup a LAN for communication between pis and a long term storage.
 
 ## Build
 Instructions with pictures to come when more general casing is designed.
+
+### Installation
+1. Install Raspberry Pi OS (lite recommended) onto your SSD with custom settings. In the custom settings select username, a unique hostname, setup wifi, and **most importantly** enable SSH.
+    - Be sure to enter a hostname unique to other devices on network.
+2. Before progressing, the pi will need to be on and [connected to the internet](https://www.raspberrypi.com/documentation/computers/configuration.html#networking).
+3. It's good practice on first boot to run `sudo apt-get update` and `sudo apt-get upgrade`
+4. enter `curl -O https://raw.githubusercontent.com/rgough5/tom/main/install_tom.sh` to download the installer
+5. Run the install file `bash install_tom.sh`.
+6. *Optional:* Currently, files are transfered to another computer over ssh. You will need to setup passwordless connections if you want to use this.
 
 ### Usage
 1. **If** you would like to run the raspi headless *(recommendeded)*.
@@ -35,17 +44,11 @@ Instructions with pictures to come when more general casing is designed.
 2. Run the python script with `python recAV.py`
     1. You will prompted to enter the file prefix, recording length, whether to record audio, and whether to transfer files after recordings
 
-### Installation
-1. Install Raspberry Pi OS (lite recommended) onto your SSD with custom settings. In the custom settings select username, a unique hostname, setup wifi, and **most importantly** enable SSH.
-    - Be sure to enter a hostname unique to other devices on network.
-2. It's good practice on first boot to run `sudo apt-get update` and `sudo apt-get upgrade`
-3. With the pi on and [connected to the internet](https://www.raspberrypi.com/documentation/computers/configuration.html#networking) enter `curl -O https://raw.githubusercontent.com/rgough5/tom/main/install.sh` to download the installer
-4. Run the install file `bash install_tom.sh`.
-
 ### Issues
 - Adjusting settings is difficult and typically results in worse image.
 - When recording with audio, video quality must be limitted to 10fps and 480p. Great for file size and good enough for most longitudinal use cases.
 
 ### In progress
 - Working on GUI
-- 
+
+Contact Rhys at rgough5@jhu.edu for any questions, requests, etc.
