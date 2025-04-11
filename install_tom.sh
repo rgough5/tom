@@ -6,4 +6,6 @@ sudo python -m venv --system-site-packages /opt/rec/
 source /opt/rec/bin/activate
 pip install sounddevice soundfile
 curl -O https://raw.githubusercontent.com/rgough5/tom/dev/tom.py
+curl -O https://raw.githubusercontent.com/rgough5/tom/dev/tom_arm.py
+curl -O https://raw.githubusercontent.com/rgough5/tom/dev/tom.json
 chmod +x tom.py
