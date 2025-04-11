@@ -1,0 +1,30 @@
+{
+  "general_settings": {
+    "save_dir": null,
+    "cut_time": 3600,
+    "rec_a": true,
+    "rec_v": true,
+    "rec_t": false
+  },
+  "audio_settings": {
+    "sample_rate": 250000,
+    "audio_extension": ".flac",
+    "subtype": "PCM_S8",
+    "channels": 1,
+    "mic_key": "ltrmic"
+  },
+  "video_settings": {
+    "size": [640,480],
+    "format": "YUV420",
+    "fps": 10,
+    "exposure": 1000,
+    "saturation":0,
+    "sharpness": 4
+  },
+  "transfer_settings": {
+    "t_user": "loser",
+    "t_password": "pass123!",
+    "t_ip": "kminiscope.local",
+    "t_loc": "Downloads/."
+  }
+}
